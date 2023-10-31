@@ -65,9 +65,12 @@ namespace BookStoreApp.API.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> PutAuthor(int id, AuthorUpdateDto authorDto)
         {
-            var author = _mapper.Map<Author>(authorDto);
-            author.Id = id;
-
+            var author = await _context.Authors.FindAsync(id);
+            
+            if (author == null)
+                return NotFound();
+            
+            _mapper.Map(authorDto, author);
             _context.Entry(author).State = EntityState.Modified;
 
             try
