@@ -5,9 +5,11 @@ namespace BookStoreApp.API.Models.Author
     public class AuthorCreateDto
     {
         [StringLength(50)]
+        [Required]
         public required string FirstName { get; set; }
 
         [StringLength(50)]
+        [Required]
         public required string LastName { get; set; }
 
         [StringLength(250)]
