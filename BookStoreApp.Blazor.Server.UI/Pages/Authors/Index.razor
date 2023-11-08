@@ -1,0 +1,72 @@
+﻿@page "/authors/"
+@inject IAuthorService AuthorService
+
+<h3>Index</h3>
+
+@if (Authors is null)
+{
+    @if (!response.IsSuccess)
+    {
+        <div class="alert alert-danger">
+            <h4>@response.Message</h4>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h4>Loading Data...</h4>
+        </div>
+    }
+}
+else
+{
+    <NavLink href="authors/create" class="btn btn-dark">
+        <span class="oi oi-plus"></span> Create New 
+    </NavLink>
+    <br />
+    <table class="table table-responsive">
+        <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (var author in Authors)
+            {
+                <tr>
+                    <td>@author.FirstName</td>
+                    <td>@author.LastName</td>
+                    <td>
+                        <NavLink class="btn btn-primary" href="authors/details">
+                            <span class="oi oi-book"></span> Details
+                        </NavLink>
+                        <NavLink class="btn btn-warning" href="@($"authors/update/{author.Id}")">
+                            <span class="oi oi-pencil"></span> Edit
+                        </NavLink>
+                        <NavLink class="btn btn-danger" href="authors/delete">
+                            <span class="oi oi-delete"></span> Delete
+                        </NavLink>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private ICollection<AuthorReadOnlyDto>? Authors;
+    private Response<List<AuthorReadOnlyDto>> response = new() { IsSuccess = true };
+
+    protected override async Task OnInitializedAsync()
+    {
+        response = await AuthorService.GetAuthors();
+
+        if (response.IsSuccess)
+        {
+            Authors = response.Data;
+        }
+    }
+
+}
